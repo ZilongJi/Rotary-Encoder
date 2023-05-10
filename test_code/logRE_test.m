@@ -1,19 +1,22 @@
 %% This is the matlab code to log data from the rotary encoder
-
 % create by Zilong Ji (2023) zilong.ji@ucl.ac.uk
-
-% The log file looks like:
-
-% 2023-05-10 15:23:44.772 Rot=99.136957
-% 2023-05-10 15:23:44.778 Rot=99.136957
-% 2023-05-10 15:23:44.785 Rot=99.136957
-% 2023-05-10 15:23:44.790 Rot=99.136957
-% 2023-05-10 15:23:44.796 Rot=99.136957
-% 2023-05-10 15:23:44.802 Rot=99.136957
-% 2023-05-10 15:23:44.806 Rot=99.136957
-% 2023-05-10 15:23:44.809 Rot=99.136957
-
 clear; clc;
+
+
+% % display a message to prompt user to press 'g' key
+% disp('Press ''g'' to continue...');
+% 
+% while true
+%     % Wait for a button press
+%     w = waitforbuttonpress;
+%     
+%     % Check if the pressed key is "g"
+%     if strcmp(get(gcf, 'CurrentCharacter'), 'g')
+%         % Execute your code here
+%         disp('g key pressed');
+%         break; % exit the loop
+%     end
+% end
 
 %1, Open COM port:
 E2019Q_ID = E2019Q.Open_COM_Port('COM4');
@@ -28,10 +31,10 @@ filename = ['./Logs/REdata_', timestamp, '.txt'];
 % Open file for writing
 fid = fopen(filename, 'w');
 
-hf=figure('position',[0 0 eps eps],'menubar','none'); 
+% Write data with timestamp to file
+count=0;
 
-% loop until a key is pressed to stop the while loop
-while true
+while count<2000
     % Read encoder count in double precision format
     Enc_count = E2019Q.GetEncCountDOUBLE(E2019Q_ID);
     
@@ -39,18 +42,13 @@ while true
     Enc_count = mod(Enc_count/36800*2*pi, 2*pi);
     Enc_count = Enc_count*180/pi;
 
+    %TimeStamp = datestr(datetime('now'), 'yyyy-mm-dd HH:MM:SS.FFF');
     TimeStamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
     
     % Write data and timestamp to file
     fprintf(fid, '%s Rot=%f\n', TimeStamp, Enc_count);
-
-    if strcmp(get(hf,'currentcharacter'),'b')
-        close(hf)
-        break
-    end
-
-    figure(hf)
-    drawnow
+    
+    count = count+1;
 
 end
 

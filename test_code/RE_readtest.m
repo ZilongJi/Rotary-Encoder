@@ -41,7 +41,7 @@ E2019Q.ResetCurrentCount(E2019Q_ID)
 Enc_position_reset = E2019Q.GetEncPosition_Timestamp(E2019Q_ID);
 
 %18, Read timestamp of position in double precision format:
-DoubelTimeStamp = E2019Q.GetTimestampDOUBLE(E2019Q_ID)/1000000
+DoubelTimeStamp = E2019Q.GetTimestampDOUBLE(E2019Q_ID)/1000000;
 
 %Convert to time
 %refTime = datenum(DoubelTimeStamp);

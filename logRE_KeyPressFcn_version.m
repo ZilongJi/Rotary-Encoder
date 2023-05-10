@@ -1,4 +1,7 @@
 %% This is the matlab code to log data from the rotary encoder
+% This code is similar to logRE, which has sampling frequence around 200Hz
+% It requires key pressing on the pop-out figure which does not work if
+% you move the cursor and click somewhere else outside the window.
 
 % create by Zilong Ji (2023) zilong.ji@ucl.ac.uk
 
@@ -28,7 +31,7 @@ filename = ['./Logs/REdata_', timestamp, '.txt'];
 % Open file for writing
 fid = fopen(filename, 'w');
 
-hf=figure('position',[0 0 eps eps],'menubar','none'); 
+myFig = figure('KeyPressFcn', @myKeyPressFcn,'UserData', false);
 
 % loop until a key is pressed to stop the while loop
 while true
@@ -39,19 +42,18 @@ while true
     Enc_count = mod(Enc_count/36800*2*pi, 2*pi);
     Enc_count = Enc_count*180/pi;
 
+    %TimeStamp = datestr(datetime('now'), 'yyyy-mm-dd HH:MM:SS.FFF');
     TimeStamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
     
     % Write data and timestamp to file
     fprintf(fid, '%s Rot=%f\n', TimeStamp, Enc_count);
-
-    if strcmp(get(hf,'currentcharacter'),'b')
-        close(hf)
+    
+    if myFig.UserData
+        close(myFig)
         break
     end
-
-    figure(hf)
+    
     drawnow
-
 end
 
 % Close file
@@ -61,3 +63,9 @@ fclose(fid);
 %instrfind
 %delete(instrfind({'Port'},{'COM4'}));
 E2019Q.Close_COM_Port(E2019Q_ID);
+
+function myKeyPressFcn(src, evt)
+    if strcmp(evt.Key, 'b')
+        src.UserData = true;
+    end
+end

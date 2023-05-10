@@ -1,4 +1,6 @@
 %% This is the matlab code to log data from the rotary encoder
+% The sampling frequency in this code is higher than using the figure, 
+% but requires Matlab Psychtoolbox to be installed.
 
 % create by Zilong Ji (2023) zilong.ji@ucl.ac.uk
 
@@ -28,10 +30,10 @@ filename = ['./Logs/REdata_', timestamp, '.txt'];
 % Open file for writing
 fid = fopen(filename, 'w');
 
-hf=figure('position',[0 0 eps eps],'menubar','none'); 
-
+%KbName('b')
+RestrictKeysForKbCheck(66);
 % loop until a key is pressed to stop the while loop
-while true
+while ~KbCheck
     % Read encoder count in double precision format
     Enc_count = E2019Q.GetEncCountDOUBLE(E2019Q_ID);
     
@@ -39,18 +41,11 @@ while true
     Enc_count = mod(Enc_count/36800*2*pi, 2*pi);
     Enc_count = Enc_count*180/pi;
 
+    %TimeStamp = datestr(datetime('now'), 'yyyy-mm-dd HH:MM:SS.FFF');
     TimeStamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
     
     % Write data and timestamp to file
     fprintf(fid, '%s Rot=%f\n', TimeStamp, Enc_count);
-
-    if strcmp(get(hf,'currentcharacter'),'b')
-        close(hf)
-        break
-    end
-
-    figure(hf)
-    drawnow
 
 end
 
