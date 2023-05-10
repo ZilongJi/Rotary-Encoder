@@ -22,8 +22,9 @@ E2019Q_ID = E2019Q.Open_COM_Port('COM4');
 E2019Q.ResetCurrentCount(E2019Q_ID);
 
 %3, Generate filename with timestamp
-timestamp = datestr(now, 'yyyymmdd_HHMMSS');
-filename = ['./Logs/REdata_', timestamp, '.txt'];
+timestamp =  datetime('now', 'Format', 'yyyyMMdd_HHmmss');
+
+filename = "./Logs/REdata_" + string(timestamp) + ".txt";
 
 % Open file for writing
 fid = fopen(filename, 'w');
